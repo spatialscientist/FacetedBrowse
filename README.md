@@ -1,4 +1,4 @@
-# Modifification notes
+# Modification notes
 Solution for a request on Omeka S forum - https://forum.omeka.org/t/truncate-values-for-item-set-values-faceted-browse-module/19080
 
 # Faceted Browse
