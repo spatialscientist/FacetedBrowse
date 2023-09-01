@@ -1,7 +1,19 @@
+<!-- This file was modified by Dr Godwin Yeboah from Research Computing team at the University of Warwick-->
+<!-- Modification date was September 01 2023-->
+<!-- Modification was in response of a request on Omeka S forum - https://forum.omeka.org/t/truncate-values-for-item-set-values-faceted-browse-module/19080 -->
+<!-- You can reach Godwin using either g.yeboah at warwick.ac.uk -->
+
+<!-- Specify the number of itemsets to be shown on page load as showNumberOnPageLoad value -->
+<?php 
+$showNumberOnPageLoad = 5; //Default based on client request but can be changed where necessary.
+?>
+  
 <?php if ($singleSelect): ?>
 <?php echo $this->formElement($singleSelect); ?>
 <?php else: ?>
-<ul>
+
+<!-- Create an unordered list with hidden content -->
+<ul id="itemsetsListed" >
     <?php foreach ($itemSets as $itemSet): ?>
     <li>
         <label>
@@ -16,3 +28,40 @@
     <?php endforeach; ?>
 </ul>
 <?php endif; ?>
+
+
+<!-- Add a link to show or see more itemsets if specified value 
+     of itemsets to see on page load is less than itemsets available-->
+    <?php if ($showNumberOnPageLoad < count($itemSets)): ?>
+      <!-- Add a link to show more itemsets -->
+      <a href="#" id="see-more-itemsets-link">See more</a>
+    <?php endif; ?>
+
+<!-- JavaScript to show and hide itemsets in Omeka S FacetedBrowse Module -->
+<script>
+    // Get references to the link and list elements
+    var showMoreLink = document.getElementById("see-more-itemsets-link");
+    var listContent = document.getElementById("itemsetsListed");
+    var showOnPageLoad = <?php echo $showNumberOnPageLoad; ?>; // Change this value to suite your needs above
+
+    // Add a click event listener to the link
+    showMoreLink.addEventListener("click", function (event) {
+        event.preventDefault(); // Prevent the link from navigating
+
+        // Toggle the visibility of the remaining list items
+        var listItems = listContent.getElementsByTagName("li");
+        for (var i = showOnPageLoad; i < listItems.length; i++) {
+            listItems[i].style.display = (listItems[i].style.display === "none") ? "list-item" : "none";
+        }
+
+        // Change link text based on visibility
+        var isHidden = listItems[showOnPageLoad].style.display === "none";
+        showMoreLink.textContent = isHidden ? "Show More" : "Show Less";
+    });
+
+    // Initially hide all items beyond the first showOnPageLoad value
+    var listItems = listContent.getElementsByTagName("li");
+    for (var i = showOnPageLoad; i < listItems.length; i++) {
+        listItems[i].style.display = "none";
+    }
+</script>
